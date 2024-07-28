@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up and Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signUp()">Sign Up</button>
+        <p id="signup-error" class="error">Username and password must be entered</p>
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="login-error" class="error">Username and password must be entered</p>
+    </div>
+
+    <script>
+        function signUp() {
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+            const signupError = document.getElementById('signup-error');
+
+            if (!username || !password) {
+                signupError.style.display = 'block';
+                return;
+            }
+
+            signupError.style.display = 'none';
+
+            // Check if the username already exists
+            if (localStorage.getItem(username)) {
+                signupError.textContent = 'Username already exists';
+                signupError.style.display = 'block';
+                return;
+            }
+
+            // Save user data in localStorage
+            localStorage.setItem(username, JSON.stringify({ password: password, coins: 10 }));
+
+            // Redirect to mining page with signup bonus
+            localStorage.setItem('currentUser', username);
+            window.location.href = 'mining.html';
+        }
+
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const loginError = document.getElementById('login-error');
+
+            if (!username || !password) {
+                loginError.style.display = 'block';
+                return;
+            }
+
+            loginError.style.display = 'none';
+
+            const user = localStorage.getItem(username);
+
+            if (!user) {
+                loginError.textContent = 'Invalid username or password';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            const userData = JSON.parse(user);
+
+            if (userData.password !== password) {
+                loginError.textContent = 'Invalid username or password';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            // Save current user in localStorage
+            localStorage.setItem('currentUser', username);
+            window.location.href = 'mining.html';
+        }
+    </script>
+</body>
+</html>
